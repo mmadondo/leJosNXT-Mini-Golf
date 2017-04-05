@@ -1,0 +1,88 @@
+/**
+* April 26, 2016 
+lineSensor code
+*/
+
+import java.util.ArrayList;
+import java.util.List;
+import lejos.nxt.Button;
+import lejos.nxt.ColorSensor;
+import lejos.nxt.LCD;
+import lejos.nxt.LightSensor;
+import lejos.nxt.Motor;
+import lejos.nxt.SensorPort;
+import lejos.util.Stopwatch;
+import lejos.robotics.navigation.*;
+
+public class lineSensorTest {
+    
+	public static void main(String[] options) throws InterruptedException {
+		
+		final int STRAIGHT = 0;
+		final int LEFT = 1;
+		final int RIGHT = 2;
+		//List myList = new ArrayList();
+		ArrayList<Float> dist = new ArrayList<Float>();
+		ColorSensor lightLeft = new ColorSensor(SensorPort.S2);
+		ColorSensor lightRight = new ColorSensor(SensorPort.S3);
+		DifferentialPilot pilot = new DifferentialPilot(62f,20f,Motor.B, Motor.C,false);
+		pilot.setTravelSpeed(150);
+		pilot.reset();
+		pilot.forward();
+		
+		int status = STRAIGHT; 		// 0=straight, 1=right, 2=left
+		while (! Button.LEFT.isDown()){
+
+			
+			LCD.drawString("Right%: ", 0, 1);
+			LCD.drawInt(lightRight.getColorID(), 3, 9, 1);
+			//LCD.drawInt(lightRight.getColor().getRed(), 3, 9, 2);
+			
+			if (lightRight.getColorID()==0 && lightLeft.getColorID()==6){
+				pilot.steer(150);
+				if (status != LEFT) {
+					float distance = pilot.getMovement().getDistanceTraveled();
+					dist.add(distance);
+					LCD.drawInt((int)distance, 0, 0);
+					status = LEFT;
+				}
+
+			}
+				
+            else if (lightRight.getColorID()==6 && lightLeft.getColorID()==0){
+            	pilot.steer(-150);
+            	if (status != RIGHT) {
+    				float distance = pilot.getMovement().getDistanceTraveled();
+    				dist.add(distance);
+    				LCD.drawInt((int)distance, 0, 0);
+    				status = RIGHT;
+            	}
+
+            }else{
+				pilot.forward();
+				if (status != STRAIGHT){
+					float distance = pilot.getMovement().getDistanceTraveled();
+					dist.add(distance);
+					LCD.drawInt((int)distance, 0, 0);
+					status = STRAIGHT;
+				}
+
+			}
+			
+			Thread.sleep(10);
+			
+		} // while
+		pilot.stop();
+		while (! Button.RIGHT.isDown()){
+			Thread.sleep(10);
+		}
+		
+		for (float d: dist) {
+			pilot.travel(d * 500);
+			LCD.drawInt((int)d, 0, 0);
+		
+		}
+	
+	}
+	
+}
