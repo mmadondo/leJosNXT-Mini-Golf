@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-
 import lejos.nxt.Button;
 import lejos.nxt.ColorSensor;
 import lejos.nxt.LCD;
@@ -18,13 +17,7 @@ public class lineSensorTest {
 	
 	public static void hitBall(int time) throws InterruptedException
 	{
-//		Motor.B.setSpeed(1500);
-//		Motor.C.setSpeed(1500);
-//		Motor.B.forward();
-//		Motor.C.forward();
-//		Thread.sleep(time);
-//		Motor.B.stop(true);
-//		Motor.C.stop(true);
+
 		pilotGreen.setTravelSpeed(2000);
 		pilotGreen.travel(time);
 		pilotGreen.stop();
@@ -36,9 +29,8 @@ public class lineSensorTest {
 		UltrasonicSensor usonic;
 
 		usonic = new UltrasonicSensor(SensorPort.S1);
-		int dist;
-		dist = usonic.getDistance();
-
+		int dist = usonic.getDistance();
+		
 		Motor.B.setSpeed(200);
 		Motor.C.setSpeed(200);
 		while (dist>15)
@@ -67,8 +59,8 @@ public class lineSensorTest {
 		final int STRAIGHT = 0;               // constants for the direction  
 		final int LEFT = 1;                   // used by the status
 		final int RIGHT = 2;
-        final int RED = 0;
-        final int WHITE = 6;                 // Should use Color.WHITE  
+      //  final int RED = 0;
+       // final int WHITE = 6;                 // Should use Color.WHITE  
 
         final int TURN_AMOUNT = 160;          // amount to turn when line following
         final int SPEED_LINE_FOLLOWING = 100; // speed when following the red line
@@ -79,8 +71,10 @@ public class lineSensorTest {
         ArrayList<Integer> dirList = new ArrayList<Integer>();      // list of directions travelled
 		ColorSensor lightLeft = new ColorSensor(SensorPort.S2);
 		ColorSensor lightRight = new ColorSensor(SensorPort.S3);
+		
 		pilot = new DifferentialPilot(60f,60f,20f,Motor.B, Motor.C,false);
 		pilotGreen = new DifferentialPilot(60f,63f,20f,Motor.B, Motor.C,false);
+		
 		pilot.setTravelSpeed(SPEED_LINE_FOLLOWING);
 		pilot.reset();
 		
@@ -96,7 +90,7 @@ public class lineSensorTest {
 			LCD.drawString("Right%: ", 0, 1);
 			LCD.drawInt(lightRight.getColorID(), 3, 9, 1);
 			//LCD.drawInt(lightRight.getColor().getRed(), 3, 9, 2);
-			if (lightRight.getColorID()==0 && lightLeft.getColorID()==6){
+			if (lightRight.getColorID()== Color.WHITE && lightLeft.getColorID()== COLOR.RED){
 				if (status != LEFT) {
 					float distance = pilot.getMovement().getDistanceTraveled();
 					distList.add(distance);                         // add the distance to the list
@@ -106,7 +100,7 @@ public class lineSensorTest {
                     pilot.steer(TURN_AMOUNT);
 				}
 
-			} else if (lightRight.getColorID()==6 && lightLeft.getColorID()==0){
+			} else if (lightRight.getColorID()== COLOR.RED && lightLeft.getColorID()==  ){
             	if (status != RIGHT) {
     				float distance = pilot.getMovement().getDistanceTraveled();
     				distList.add(distance);                         // add the distance to the list
