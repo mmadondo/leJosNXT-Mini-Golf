@@ -24,7 +24,7 @@ import lejos.util.PilotProps;
  * sets the parameters of the Pilot to the dimensions
  * and motor connections for your robot.
  * 
- * @author Lawrie Griffiths
+ * @author Lawrie Griffiths.
  *
  */
 public class LineFollower {
